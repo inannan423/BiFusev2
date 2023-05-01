@@ -68,9 +68,6 @@ def process_image(img_url):
     # 将 res 保存到本地 res.json
     with open('res.json', 'w') as f:
         json.dump(res, f)
-    # 将 res 转 json 格式
-    print(res)
-    print('!!!!', res[0]['url'])
     return res[0]['url']
 
 
@@ -87,14 +84,17 @@ def predict():
         return jsonify({'error': 'missing imgs'}), 400
 
     urls = request.form.getlist('imgs')
-    print(urls)
     # 将 urls 转为一个数组，数组中的每个元素是一个图片的 url
     urls = urls[0].split(',')
-    print(urls[0])
     res_urls = []
     for url in urls:
         res_url = process_image(url)
         res_urls.append(res_url)
+
+    # 将 res_urls 每个元素添加前缀 https://oss.jetlab.live，并返回
+
+    for i in range(len(res_urls)):
+        res_urls[i] = 'https://oss.jetlab.live' + res_urls[i]
 
     # 返回深度图,以图片形式返回
     return jsonify({'urls': res_urls})
